@@ -8,6 +8,7 @@ import ReviewList from './routes/ReviewList';
 import ReviewDetails from './routes/ReviewDetails';
 import Settings from './routes/Settings';
 import NotFound from './routes/NotFound';
+import NewReview from './routes/NewReview';
 
 import '@shopify/polaris/styles.css';
 
@@ -31,6 +32,7 @@ function App() {
             <Route path="/reviews/:id" component={ReviewDetails} />
             <Route exact path="/settings" component={Settings} />
             <Route component={NotFound} />
+            <Route exact path="/newreview" component={NewReview} />
           </Switch>
         </Router>
       </ApolloProvider>

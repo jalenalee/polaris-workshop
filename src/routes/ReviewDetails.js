@@ -23,13 +23,26 @@ function ReviewDetails(props) {
   const {
     data: {loading, review},
   } = props;
-
+  const badge =
+    review.status === 'published' ? (
+      <Badge status="success">Published</Badge>
+    ) : (
+      <Badge status="attention">Unpublished</Badge>
+    );
   if (loading) {
     return (
       <SkeletonPage>
         <Layout>
           <Layout.Section>
             <Card title="Review" sectioned>
+              <Stack verticle>
+                <Avatar customer name={review.customer.name} />
+                <p>{review.customer.name}</p>
+                {badge}
+                <Rating value={review.rating} />
+                <p>{review.content}</p>
+              </Stack>
+
               <TextContainer>
                 <SkeletonDisplayText size="small" />
                 <SkeletonBodyText />
@@ -53,50 +66,38 @@ function ReviewDetails(props) {
     return <NotFound />;
   }
 
-  const badge =
-    review.status === 'published' ? (
-      <Badge>Published</Badge>
-    ) : (
-      <Badge>Unpublished</Badge>
-    );
-
   return (
     <Page
       title={review.title}
       breadcrumbs={[{content: 'All reviews', url: '/'}]}
     >
-      <Card title="Review" sectioned>
-        {/*
-        This is the main content of our review details card.
-        We will be introducing a stack component here to lay this content out.*/}
-
-        {/*
-        <Avatar customer name={review.customer.name} />
-        <p>{review.customer.name}</p>
-        {badge}
-        <Rating value={review.rating} />
-        <p>{review.content}</p>
-        */}
-      </Card>
-
-      <Card>
-        <Card.Section>
-          <Stack alignment="center" distribution="equalSpacing">
-            <Stack alignment="center">
-              <Thumbnail
-                source="https://cdn.shopify.com/s/files/1/1602/3257/products/paste-prod_thumb.jpg"
-                alt=""
-                size="medium"
-              />
-              <TextStyle variation="strong">{review.product.name}</TextStyle>
-            </Stack>
-            <Stack>
-              <Rating value={review.product.averageRating} />
-              <p>{review.product.reviewCount} reviews</p>
-            </Stack>
-          </Stack>
-        </Card.Section>
-      </Card>
+      <Layout>
+        <Layout.Section>
+          <Card>
+            <Card.Section>
+              <Stack alignment="center" distribution="equalSpacing">
+                <Stack alignment="center">
+                  <Thumbnail
+                    source="https://cdn.shopify.com/s/files/1/1602/3257/products/paste-prod_thumb.jpg"
+                    alt=""
+                    size="medium"
+                  />
+                  <TextStyle variation="strong">
+                    {review.product.name}
+                  </TextStyle>
+                </Stack>
+                <Stack.Item fill>
+                  <p>{review.customer.name}</p>
+                </Stack.Item>
+                <Stack>
+                  <Rating value={review.product.averageRating} />
+                  <p>{review.product.reviewCount} reviews</p>
+                </Stack>
+              </Stack>
+            </Card.Section>
+          </Card>
+        </Layout.Section>
+      </Layout>
     </Page>
   );
 }

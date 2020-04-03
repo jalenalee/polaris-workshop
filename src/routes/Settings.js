@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {graphql, compose} from 'react-apollo';
 import gql from 'graphql-tag';
 import {
@@ -9,6 +9,10 @@ import {
   SkeletonBodyText,
   SkeletonDisplayText,
   TextContainer,
+  TextField,
+  Checkbox,
+  RadioButton,
+  Stack,
 } from '@shopify/polaris';
 
 function Settings({loading, updateSettingsMutation}) {
@@ -16,7 +20,17 @@ function Settings({loading, updateSettingsMutation}) {
   const [email, setEmail] = useState('');
   const [emailNotifications, setEmailNotifications] = useState(false);
   const [emailError, setEmailError] = useState(false);
+  const [value, setValue] = useState('disabled');
 
+  const [textFieldValue, setTextFieldValue] = useState('temp');
+  const handleTextFieldChange = useCallback(
+    (newTextFieldValue) => setTextFieldValue(newTextFieldValue),
+    [],
+  );
+  const handleChange = useCallback(
+    (_checked, newValue) => setValue(newValue),
+    [],
+  );
   const handleFormSubmit = () => {
     // We prevent form submission when there is an error in the email field.
     if (emailError) {
@@ -66,16 +80,36 @@ function Settings({loading, updateSettingsMutation}) {
       {/* Annotated sections are useful in settings pages to give more context about what the merchant will change with each setting. */}
       <Layout.AnnotatedSection
         title="Auto publish"
+        description="Automatically check new reviews for spam and then publish"
       >
-        <Card sectioned>
-          {/* ... */}
-        </Card>
+        <Stack vertical>
+          <Card sectioned>
+            <p>Auto publish</p>
+            <RadioButton
+              label="Enabled"
+              helpText="New reviews are check for spam and then automatically published"
+              checked={value === 'disabled'}
+              id="disabled"
+              onChange={handleChange}
+            />
+            <RadioButton
+              label="Disabled"
+              helpText="You must manually approve and publish new reviews"
+              id="optional"
+              checked={value === 'optional'}
+              onChange={handleChange}
+            />
+          </Card>
+        </Stack>
       </Layout.AnnotatedSection>
-      <Layout.AnnotatedSection
-        title="Email settings"
-      >
+      <Layout.AnnotatedSection title="Email settings">
         <Card sectioned>
-          {/* ... */}
+          <TextField
+            label="Email"
+            value={textFieldValue}
+            onchange={handleTextFieldChange}
+          />
+          <Checkbox label="Send me an email when a review is submitted" />
         </Card>
       </Layout.AnnotatedSection>
     </Layout>
